@@ -2,18 +2,23 @@ import './App.css';
 import { useEffect, useState } from 'react';
 
 function App() {
+  const numberZer0 = Number(0);
   const [from, setFrom] = useState('USD')
   const [to, setTo] = useState('CHF')
-  const [amount, setAmount] = useState(Number(0))
-  const [output, setOutput] = useState(Number(0))
+  const [amount, setAmount] = useState(numberZer0)
+  const [output, setOutput] = useState(numberZer0)
   const [isLoading, setIsLoading] = useState(false)
  
-
 
 useEffect(() => {
   // fetch(`https://api.frankfurter.app/latest?amount=${amount}&from=${from}&to=${to}`)
   async function convert () {
-    if (amount === 0 || amount.length < 1) return;
+    if (amount === 0 || amount.length < 1 || to === from) {
+      setOutput(numberZer0)
+      setAmount(numberZer0)
+      return
+    };
+    
 
     try{
       setIsLoading(true);
@@ -38,7 +43,7 @@ useEffect(() => {
     }
   }
   convert();
-}, [to, from, amount, output])
+}, [to, from, amount, output, numberZer0])
 
 console.log(amount, to, from, output)
   return (
@@ -53,6 +58,10 @@ console.log(amount, to, from, output)
         <option value="INR">INR</option>
         <option value="BRL">BRL</option>
         <option value="CHF">CHF</option>
+        <option value="NOK">NOK</option>
+        <option value="SEK">SEK</option>
+        <option value="ZAR">ZAR</option>
+
       </select>
       <select value={to} onChange={(e) => setTo(e.target.value)}>
         <option value="USD">USD</option>
@@ -61,9 +70,12 @@ console.log(amount, to, from, output)
         <option value="INR">INR</option>
         <option value="BRL">BRL</option>
         <option value="CHF">CHF</option>
+        <option value="NOK">NOK</option>
+        <option value="SEK">SEK</option>
+        <option value="ZAR">ZAR</option>
       </select>
       
-    {isLoading ? <Loader /> : <p>OUTPUT : {output} {to}</p>}
+    {isLoading ? <Loader /> : <p>OUTPUT : {output.toFixed(2)} {to}</p>}
     </div>
   );
 }
